@@ -241,27 +241,44 @@ parseResumeBtn.addEventListener('click', async () => {
   }
 });
 
-// Read file as text
-function readFileAsText(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    
-    reader.onload = (e) => {
-      resolve(e.target.result);
-    };
-    
-    reader.onerror = () => {
-      reject(new Error('Failed to read file'));
-    };
-    
-    reader.readAsText(file);
+// Read PDF file and extract text
+async function readFileAsText(file) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Check if it's a PDF
+      if (file.type === 'application/pdf') {
+        // Use PDF.js to extract text
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        
+        let fullText = '';
+        
+        // Extract text from each page
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map(item => item.str).join(' ');
+          fullText += pageText + '\n\n';
+        }
+        
+        resolve(fullText);
+      } else {
+        // For non-PDF files, use regular text reader
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsText(file);
+      }
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
+
 // Parse resume with AI (backend call)
 async function parseResumeWithAI(resumeText) {
-  const BACKEND_URL = 'https://quickbid-ai-backend.onrender.com';
-  
+  const BACKEND_URL = 'http://localhost:3000'; 
   const response = await fetch(`${BACKEND_URL}/api/parse-resume`, {
     method: 'POST',
     headers: {
