@@ -1,20 +1,3 @@
-/*
- * QuickBid AI - Main Popup
- * 
- * CHROME PERMISSIONS USAGE:
- * - storage (chrome.storage.sync): 
- *   Used to load user profile for personalized proposal generation.
- *   Core functionality requires persisting profile across browser sessions.
- * - activeTab: 
- *   Used to access current Upwork/Fiverr/Freelancer tab to read job description.
- *   Essential for extracting job posting text for proposal generation.
- * - scripting: 
- *   Used to inject content script to extract job description from page.
- *   Required to read job posting without manual copy/paste.
- * - clipboardWrite: 
- *   Used to copy generated proposal to clipboard for easy pasting.
- *   Core feature for one-click proposal copying.
- */
 // Configuration
 const BACKEND_URL = 'https://quickbid-ai-backend.onrender.com'; // Change this after deploying backend
 // For production: const BACKEND_URL = 'https://your-backend.onrender.com';
@@ -146,8 +129,7 @@ copyAgainBtn.addEventListener('click', async () => {
 // Check if user has profile set up
 async function checkProfileStatus() {
   try {
-    const result = await // ✅ CHROME STORAGE PERMISSION USAGE: Check if user profile exists
-  chrome.storage.sync.get('userProfile');
+    const result = await chrome.storage.sync.get('userProfile');
     
     if (result.userProfile && result.userProfile.fullName && result.userProfile.summary) {
       // Profile exists and has required fields

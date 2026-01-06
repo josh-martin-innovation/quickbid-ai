@@ -1,14 +1,3 @@
-/*
- * QuickBid AI - Settings Page
- * 
- * CHROME PERMISSIONS USAGE:
- * - storage (chrome.storage.sync & chrome.storage.local):
- *   Used to save user profile, auto-save drafts, and persist data across sessions.
- *   Essential for core functionality of saving professional profile.
- * - activeTab: Inherited from popup for extension functionality
- * - scripting: Inherited from popup for content script injection
- * - clipboardWrite: Inherited from popup for copying proposals
- */
 // Settings page logic
 
 const form = document.getElementById('profile-form');
@@ -333,7 +322,6 @@ function autoSaveDraft() {
     // Only save if there's some content
     if (Object.values(draftData).some(val => val.length > 0)) {
       try {
-        // ✅ CHROME STORAGE PERMISSION USAGE: Auto-save profile draft
         await chrome.storage.local.set({ profileDraft: draftData });
         console.log('Draft auto-saved');
       } catch (error) {
@@ -358,7 +346,6 @@ async function loadProfile() {
     setLoading(true, 'Loading profile...');
     
     // First try to load actual profile
-    // ✅ CHROME STORAGE PERMISSION USAGE: Load saved user profile
     const result = await chrome.storage.sync.get('userProfile');
     
     if (result.userProfile) {
@@ -384,7 +371,6 @@ async function loadProfile() {
       });
     } else {
       // Try to load draft if no profile exists
-      // ✅ CHROME STORAGE PERMISSION USAGE: Load auto-saved draft
       const draftResult = await chrome.storage.local.get('profileDraft');
       if (draftResult.profileDraft) {
         const draft = draftResult.profileDraft;
@@ -501,12 +487,10 @@ form.addEventListener('submit', async (e) => {
     setLoading(true, 'Saving profile...');
     
     // Save to sync storage
-    // ✅ CHROME STORAGE PERMISSION USAGE: Save user profile to sync storage
     await chrome.storage.sync.set({ userProfile: profile });
     
     // Clear draft after successful save
-    // ✅ CHROME STORAGE PERMISSION USAGE: Remove auto-saved draft
-      await chrome.storage.local.remove('profileDraft');
+    await chrome.storage.local.remove('profileDraft');
     
     setLoading(false);
     
@@ -559,9 +543,7 @@ clearBtn.addEventListener('click', async () => {
     try {
       setLoading(true, 'Clearing profile...');
       
-      // ✅ CHROME STORAGE PERMISSION USAGE: Remove saved profile
       await chrome.storage.sync.remove('userProfile');
-      // ✅ CHROME STORAGE PERMISSION USAGE: Remove auto-saved draft
       await chrome.storage.local.remove('profileDraft');
       
       form.reset();
@@ -611,7 +593,6 @@ backBtn.addEventListener('click', async () => {
   let hasUnsavedChanges = false;
   
   try {
-    // ✅ CHROME STORAGE PERMISSION USAGE: Load saved user profile
     const result = await chrome.storage.sync.get('userProfile');
     if (result.userProfile) {
       const saved = result.userProfile;
