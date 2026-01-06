@@ -278,7 +278,7 @@ async function readFileAsText(file) {
 
 // Parse resume with AI (backend call)
 async function parseResumeWithAI(resumeText) {
-  const BACKEND_URL = 'http://localhost:3000'; 
+  const BACKEND_URL = 'https://quickbid-ai-backend.onrender.com'; 
   const response = await fetch(`${BACKEND_URL}/api/parse-resume`, {
     method: 'POST',
     headers: {

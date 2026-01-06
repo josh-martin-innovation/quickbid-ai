@@ -1,5 +1,5 @@
 // Configuration
-const BACKEND_URL = 'http://localhost:3000'; // Change this after deploying backend
+const BACKEND_URL = 'https://quickbid-ai-backend.onrender.com'; // Change this after deploying backend
 // For production: const BACKEND_URL = 'https://your-backend.onrender.com';
 
 const statusDiv = document.getElementById('status');
