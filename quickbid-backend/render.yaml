@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: quickbid-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: KINDO_API_KEY
+        sync: false  # Must be set manually in Render dashboard
